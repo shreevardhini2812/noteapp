@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(cors());
 
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || "https://resplendent-arithmetic-69478f.netlify.app/login"
 connectDB(process.env.MONGO_URI);
 
 
