@@ -11,11 +11,20 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
-app.use(cors({
-    origin: "https://resplendent-arithmetic-69478f.netlify.app",
-    credentials: true
-}));
+const allowedOrigin = process.env.FRONTEND_URL || "https://resplendent-arithmetic-69478f.netlify.app/login";
 
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || origin.startsWith(allowedOrigin)) {
+      callback(null, true); // allow requests
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true, // allow Authorization headers
+};
+
+app.use(cors(corsOptions));
 
 const PORT = process.env.PORT || 5000
 connectDB(process.env.MONGO_URI);
