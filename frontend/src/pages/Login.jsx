@@ -1,50 +1,50 @@
-import { useState } from "react";
-import api from "../api.js";
-import { useAuth } from "../context/useAuth.jsx";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import API from "../api";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const { login } = useAuth();
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const submit = async (e) => {
+  const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const onSubmit = async (e) => {
     e.preventDefault();
-    const { data } = await api.post("/auth/login", { email, password });
-    login(data.token);
-    navigate("/notes");
+    setError("");
+    try {
+      const res = await API.post("/auth/login", form); // Correct endpoint
+      localStorage.setItem("token", res.data.token);
+      navigate("/notes");
+    } catch (err) {
+      setError(err.response?.data?.msg || "Login failed");
+    }
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-100">
-      <form className="bg-white p-6 rounded-lg shadow w-96" onSubmit={submit}>
-        <h1 className="text-2xl font-bold mb-4 text-center">Login</h1>
-
+    <div className="max-w-md mx-auto bg-white p-6 rounded shadow mt-10">
+      <h2 className="text-xl font-semibold mb-4">Login</h2>
+      {error && <div className="text-red-500 mb-2">{error}</div>}
+      <form onSubmit={onSubmit} className="space-y-3">
         <input
           type="email"
+          name="email"
           placeholder="Email"
-          className="border p-2 w-full rounded mb-3"
-          onChange={(e) => setEmail(e.target.value)}
+          value={form.email}
+          onChange={onChange}
+          className="w-full p-2 border rounded"
+          required
         />
-
         <input
           type="password"
+          name="password"
           placeholder="Password"
-          className="border p-2 w-full rounded mb-3"
-          onChange={(e) => setPassword(e.target.value)}
+          value={form.password}
+          onChange={onChange}
+          className="w-full p-2 border rounded"
+          required
         />
-
-        <button className="bg-blue-600 w-full text-white p-2 rounded">
-          Login
-        </button>
-
-        <p className="text-center text-sm mt-3">
-          No account?{" "}
-          <Link to="/register" className="text-blue-600 underline">
-            Register
-          </Link>
-        </p>
+        <button className="w-full bg-blue-500 text-white p-2 rounded">Login</button>
       </form>
     </div>
   );
