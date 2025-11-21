@@ -12,7 +12,7 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors({
-    origin: "https://resplendent-arithmetic-69478f.netlify.app/login",
+    origin: "https://resplendent-arithmetic-69478f.netlify.app",
     credentials: true
 }));
 
