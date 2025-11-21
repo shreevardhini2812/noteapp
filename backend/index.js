@@ -11,7 +11,7 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
-const allowedOrigin = process.env.FRONTEND_URL || "https://resplendent-arithmetic-69478f.netlify.app/login";
+const allowedOrigin = process.env.FRONTEND_URL || "https://resplendent-arithmetic-69478f.netlify.app";
 
 const corsOptions = {
   origin: function (origin, callback) {
